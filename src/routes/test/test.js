@@ -1,25 +1,18 @@
 function GET(req, res, url, payload) {
   res.writeHead(200, {
-    "Content-type": "text/html",
+    "Content-type": "application/xml",
   });
-  res.end("<h1>Lab 2</h1>");
+  res.end("<response><message>This is test route</message></response>");
 }
 
 function POST(req, res, url, payload) {
   res.writeHead(200, {
     "Content-type": "application/json",
   });
-  res.json({ message: "main POST request parsed body", data: payload });
+  res.json({ message: "POST request /test parsed body", data: payload });
 }
 
-function PATCH(req, res, url, payload) {
-  res.writeHead(200, {
-    "Content-type": "application/json",
-  });
-  res.json({ message: "main PATCH request parsed body", data: payload });
-}
-
-function OPTIONS(req, res, url, payload) {
+function OPTIONS(req, res, payload, body) {
   res.writeHead(204, {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",

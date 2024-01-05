@@ -3,11 +3,14 @@ import router from "./src/router.js";
 import defaultHandler from "./src/defaultHandler.js";
 import notFoundHandler from "./src/pageNotFoundHandler.js";
 import helpers from "./src/helpers.js";
-import { safeJSON } from "./src/utils.js";
+import { safeJSON, xmlParse, parseForm } from "./src/utils.js";
 
 const processedContentTypes = {
   "text/html": (text) => text,
   "text/plain": (text) => text,
+  "application/xml": (xml) => xmlParse(xml),
+
+  "multipart/form-data": (data) => parseForm(data),
   "application/json": (json) => safeJSON(json, {}),
   "application/x-www-form-urlencoded": (data) =>
     Object.fromEntries(new URLSearchParams(data)),
@@ -17,9 +20,6 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || "/", `https://${req.headers.host}`);
   const routeModule = router.get(url.pathname) ?? notFoundHandler;
   const handler = routeModule[req?.method] ?? defaultHandler;
-
-  console.log("🪵  ~ server ~ routeModule:", routeModule);
-  console.log("🪵  ~ server ~ handler:", handler);
 
   let payload = {};
   let rawRequest = "";
@@ -39,7 +39,7 @@ const server = http.createServer(async (req, res) => {
   } catch (err) {
     res.statusCode = 500;
     res.end(
-      process.env.NODE_ENV === "production" ? "Server Error :(" : err.stack
+      process.env.NODE_ENV === "production" ? "Server Error :(" : err.stack,
     );
     console.error(err);
   }

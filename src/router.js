@@ -29,6 +29,4 @@ async function loadRoutesDir(dirname, base) {
 
 await loadRoutesDir("", path.sep);
 
-console.log("🪵  ~ router:", router);
-
 export default router;
